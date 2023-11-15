@@ -55,24 +55,38 @@ class Board:
     def guess(self, user_input):
         hint = []
         code = copy.copy(self.code)
-        print(self.code)
         for i in range(len(user_input)):
-            print(user_input[i])
-            print(f"{self.code[i]}, A")
             if int(user_input[i]) == code[i]:
                 hint.append("o")
                 code[i] = 0
-                print(code)
-                print("Trigger o")
                 continue
             elif int(user_input[i]) in code:
                 hint.append("*")
                 index = code.index(int(user_input[i]))
                 code.pop(index)
                 code.insert(index, 0)
-                print("Trigger *")
-        print(self.code)
-        return hint
+        hint.sort()
+        return "".join(hint)
 
+    def play(self):
+        print(f"Playing Mastermind with {self.combination.color} colors and "
+              f"{self.combination.length} positions.")
+        self.gen_puzzle()
+        round = 1
+        guess = input("Enter your code: ")
+        answer = self.guess(guess)
+        print(answer)
+        while answer != self.guess(''.join(str(x) for x in self.code)):
+            guess = input("Enter your guess: ")
+            answer = self.guess(guess)
+            print(answer)
+            round += 1
+        print(f"You win the code was {''.join(str(x) for x in self.code)}"
+              f", you took {round} round(s)")
 
-
+# main part
+# print("Welcome to mastermind")
+# print("To play enter 1.\nTo edit settings enter 2.\nTo exit press 0.")
+# action = input("Enter action: ")
+board = Board()
+board.play()
