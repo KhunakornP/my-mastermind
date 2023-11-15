@@ -1,3 +1,4 @@
+import random
 class Combination:
     def __init__(self, color, length):
         self.__color = color
@@ -13,4 +14,9 @@ class Combination:
 
     @property
     def combination(self):
-        return self.__color*self.__length
+        comb_list = []
+        for i in range(self.__length):
+            rand_color = random.randint(0, self.__length)
+            comb_list.append(rand_color)
+        return comb_list
+
