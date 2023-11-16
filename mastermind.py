@@ -24,7 +24,7 @@ class Combination:
     def rand_code(self):
         comb_list = []
         for i in range(self.__length):
-            rand_color = random.randint(0, self.__color)
+            rand_color = random.randint(1, self.__color)
             comb_list.append(rand_color)
         return comb_list
 
@@ -42,34 +42,39 @@ class Board:
         self.__code = self.combination.rand_code
 
     def set_board(self):
-        length = input("Enter code length: ")
+        length = input("Enter code length (1-10): ")
         color = input("Enter the max amount of colors "
-                      "the code can contain: ")
+                      "the code can contain (1-8): ")
         while not length.isdigit() and not color.isdigit():
             print("Invalid length or color try again")
             length = input("Enter code length: ")
             color = input("Enter the max amount of colors"
                           " the code can contain: ")
+        if not 1 <= int(color) <= 8 or not 1 <= int(length) <= 10:
+            print("Length or color exceeds maximum limit.")
+            self.set_board()
         self.combination.length = int(length)
         self.combination.color = int(color)
 
     def guess(self, user_input):
         hint = []
         code = copy.copy(self.code)
+        if len(user_input) < len(code):
+            return "Invalid guess"
         for i in range(len(user_input)):
             if int(user_input[i]) == code[i]:
                 hint.append("o")
-                code[i] = 0
+                code[i] = -1
                 continue
             elif int(user_input[i]) in code:
                 index = code.index(int(user_input[i]))
                 if user_input[index] == user_input[i]:
                     hint.append("o")
-                    code[index] = 0
+                    code[index] = -1
                     continue
                 hint.append("*")
                 code.pop(index)
-                code.insert(index, 0)
+                code.insert(index, -1)
         hint.sort()
         return "".join(hint)
 
@@ -78,14 +83,17 @@ class Board:
               f"{self.combination.length} positions.")
         self.gen_puzzle()
         round = 1
-        guess = input("Enter your code: ")
+        guess = input("Enter your guess: ")
         answer = self.guess(guess)
         print(answer)
+        if answer == "Invalid guess":
+            round -= 1
         while answer != self.guess(''.join(str(x) for x in self.code)):
             guess = input("Enter your guess: ")
             answer = self.guess(guess)
             print(answer)
-            round += 1
+            if answer != "Invalid guess":
+                round += 1
         print(f"You win the code was {''.join(str(x) for x in self.code)}"
               f", you took {round} round(s)")
 
