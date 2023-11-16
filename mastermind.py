@@ -31,7 +31,7 @@ class Combination:
 
 class Board:
     def __init__(self):
-        self.combination = Combination(4,6)
+        self.combination = Combination(6,4)
         self.__code = [1,2,3,4]
 
     @property
@@ -43,14 +43,15 @@ class Board:
 
     def set_board(self):
         length = input("Enter code length: ")
-        color = input("Enter the max amount of colors the code can contain: ")
+        color = input("Enter the max amount of colors "
+                      "the code can contain: ")
         while not length.isdigit() and not color.isdigit():
             print("Invalid length or color try again")
             length = input("Enter code length: ")
             color = input("Enter the max amount of colors"
                           " the code can contain: ")
-        self.combination.length = length
-        self.combination.color = color
+        self.combination.length = int(length)
+        self.combination.color = int(color)
 
     def guess(self, user_input):
         hint = []
@@ -61,8 +62,12 @@ class Board:
                 code[i] = 0
                 continue
             elif int(user_input[i]) in code:
-                hint.append("*")
                 index = code.index(int(user_input[i]))
+                if user_input[index] == user_input[i]:
+                    hint.append("o")
+                    code[index] = 0
+                    continue
+                hint.append("*")
                 code.pop(index)
                 code.insert(index, 0)
         hint.sort()
@@ -84,9 +89,19 @@ class Board:
         print(f"You win the code was {''.join(str(x) for x in self.code)}"
               f", you took {round} round(s)")
 
+    def menu(self, action):
+        if action == "1":
+            self.play()
+        if action == "2":
+            self.set_board()
+
 # main part
-# print("Welcome to mastermind")
-# print("To play enter 1.\nTo edit settings enter 2.\nTo exit press 0.")
-# action = input("Enter action: ")
+print("Welcome to mastermind")
+print("To play enter 1.\nTo edit settings enter 2.\nTo exit press 0.")
 board = Board()
-board.play()
+action = input("Enter action: ")
+print()
+while action != "0":
+    board.menu(action)
+    action = input("Enter action: ")
+    print()
