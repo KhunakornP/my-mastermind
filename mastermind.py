@@ -96,6 +96,8 @@ class Board:
         code = copy.copy(self.code)
         if len(user_input) < len(code):
             return "Invalid guess"
+        if not user_input.isdigit():
+            return "Invalid guess"
         for i in range(len(user_input)):
             if int(user_input[i]) == code[i]:
                 hint.append("o")
@@ -118,7 +120,7 @@ class Board:
         """
         print(f"Playing Mastermind with {self.combination.color} colors and "
               f"{self.combination.length} positions.")
-        self.gen_puzzle()
+        print(self.code)
         rounds = 1
         guess = input("Enter your guess: ")
         answer = self.guess(guess)
@@ -133,12 +135,17 @@ class Board:
                 rounds += 1
         print(f"You win the code was {''.join(str(x) for x in self.code)}"
               f", you took {rounds} round(s)")
+        again = input("Retry? (y/n): ")
+        if again == "y":
+            self.play()
+        print()
 
     def menu(self, choice):
         """
         Menu to choose which function to run
         """
         if choice == "1":
+            self.gen_puzzle()
             self.play()
         if choice == "2":
             self.set_board()
@@ -152,5 +159,6 @@ action = input("Enter action: ")
 print()
 while action != "0":
     board.menu(action)
+    print("To play enter 1.\nTo edit settings enter 2.\nTo exit press 0.")
     action = input("Enter action: ")
     print()
