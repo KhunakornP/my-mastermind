@@ -57,11 +57,17 @@ class Board:
         """
         self.combination = Combination(6, 4)
         self.__code = [1, 2, 3, 4]
+        self.__debug = False
 
     @property
     def code(self):
         """code getter"""
         return self.__code
+
+    @property
+    def debug(self):
+        """debug getter"""
+        return self.__debug
 
     def gen_puzzle(self):
         """Generates the puzzle."""
@@ -100,15 +106,15 @@ class Board:
             return "Invalid guess"
         for i in range(len(user_input)):
             if int(user_input[i]) == code[i]:
-                hint.append("o")
+                hint.append("*")
                 code[i] = -1
             elif int(user_input[i]) in code:
                 index = code.index(int(user_input[i]))
                 if user_input[index] == user_input[i]:
-                    hint.append("o")
+                    hint.append("*")
                     code[index] = -1
                     continue
-                hint.append("*")
+                hint.append("o")
                 code.pop(index)
                 code.insert(index, -1)
         hint.sort()
@@ -119,27 +125,32 @@ class Board:
         Runs the game.
         """
         print(f"Playing Mastermind with {self.combination.color} colors and "
-              f"{self.combination.length} positions. \nEnter esc to abort.")
+              f"{self.combination.length} positions.\nEnter esc to abort.")
+        if self.debug:
+            print(self.code)
         rounds = 1
         guess = input("Enter your guess: ")
-        while not guess == "esc":
+        if guess == "esc":
+            print()
+            return
+        answer = self.guess(guess)
+        print(answer)
+        if answer == "Invalid guess":
+            rounds -= 1
+        while answer != self.guess(''.join(str(x) for x in self.code)):
+            guess = input("Enter your guess: ")
+            if guess == "esc":
+                print()
+                return
             answer = self.guess(guess)
             print(answer)
-            if answer == "Invalid guess":
-                rounds -= 1
-            while answer != self.guess(''.join(str(x) for x in self.code)):
-                guess = input("Enter your guess: ")
-                answer = self.guess(guess)
-                print(answer)
-                if answer != "Invalid guess":
-                    rounds += 1
-            print(f"You win the code was {''.join(str(x) for x in self.code)}"
-                  f", you took {rounds} round(s)")
-            again = input("Retry? (y/n): ")
-            if again == "y":
-                print()
-                self.play()
-            guess = "esc"
+            if answer != "Invalid guess":
+                rounds += 1
+        print(f"You win the code was {''.join(str(x) for x in self.code)}"
+              f", you took {rounds} round(s)")
+        again = input("Retry? (y/n): ")
+        if again == "y":
+            self.play()
         print()
 
     def menu(self, choice):
@@ -151,6 +162,9 @@ class Board:
             self.play()
         if choice == "2":
             self.set_board()
+        if choice == "debug":
+            self.__debug = not self.debug
+            print(f"Debug mode is now {self.debug}")
 
 
 # main part
