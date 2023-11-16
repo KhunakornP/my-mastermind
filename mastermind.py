@@ -119,25 +119,27 @@ class Board:
         Runs the game.
         """
         print(f"Playing Mastermind with {self.combination.color} colors and "
-              f"{self.combination.length} positions.")
-        print(self.code)
+              f"{self.combination.length} positions. \nEnter esc to abort.")
         rounds = 1
         guess = input("Enter your guess: ")
-        answer = self.guess(guess)
-        print(answer)
-        if answer == "Invalid guess":
-            rounds -= 1
-        while answer != self.guess(''.join(str(x) for x in self.code)):
-            guess = input("Enter your guess: ")
+        while not guess == "esc":
             answer = self.guess(guess)
             print(answer)
-            if answer != "Invalid guess":
-                rounds += 1
-        print(f"You win the code was {''.join(str(x) for x in self.code)}"
-              f", you took {rounds} round(s)")
-        again = input("Retry? (y/n): ")
-        if again == "y":
-            self.play()
+            if answer == "Invalid guess":
+                rounds -= 1
+            while answer != self.guess(''.join(str(x) for x in self.code)):
+                guess = input("Enter your guess: ")
+                answer = self.guess(guess)
+                print(answer)
+                if answer != "Invalid guess":
+                    rounds += 1
+            print(f"You win the code was {''.join(str(x) for x in self.code)}"
+                  f", you took {rounds} round(s)")
+            again = input("Retry? (y/n): ")
+            if again == "y":
+                print()
+                self.play()
+            guess = "esc"
         print()
 
     def menu(self, choice):
