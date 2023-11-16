@@ -120,7 +120,6 @@ class Board:
         """
         print(f"Playing Mastermind with {self.combination.color} colors and "
               f"{self.combination.length} positions.")
-        print(self.code)
         rounds = 1
         guess = input("Enter your guess: ")
         answer = self.guess(guess)
